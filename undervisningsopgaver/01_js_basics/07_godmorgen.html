@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>opgave 7</title>
+
+</head>
+
+<body>
+
+
+    <script>
+        //konstant for tiden ændres ikke
+        const time = new Date().getHours();
+
+        console.log("Time", time);
+        // if og en betingelse
+        if (time < 5) {
+            console.log("Godnat");
+        }
+        // else if hvis andet end det ovenover
+        else if (time < 10) {
+            console.log("godmorgen");
+        } else if (time < 18) {
+            console.log("Goddag");
+            // else fordi det er resten og derfor behøves der ikke en betingelse.
+        } else {
+            console.log("Godaften")
+        }
+
+    </script>
+</body>
+
+</html>

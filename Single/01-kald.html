@@ -27,32 +27,47 @@
             border-radius: 1em;
         }
 
-        nav {
-            text-align: center;
-            padding: 10px;
-
+        .valgt {
+            background-color: wheat;
         }
 
+        header {
+            text-align: center;
+        }
+
+
         button {
-            background-color: wheat;
-            border-radius: 5px;
-            /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
+            background-color: antiquewhite;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
             padding: 10px;
             cursor: pointer;
             width: 100px;
+            border: 100px;
         }
 
         button:hover {
-            background-color: black;
-            color: white;
+            background-color: wheat;
+            color: black;
         }
 
-        /*
-        button:focus {
-            background-color: black;
-            color: white;
+        h1 {
+            color: #000000;
+            font-size: 3rem;
+            font-family: 'Montserrat', sans-serif;
         }
-        */
+
+        p,
+        h2 {
+            color: #000000;
+            font-size: 1rem;
+            font-family: 'Raleway', sans-serif;
+            line-height: 1.9rem;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+        }
     </style>
 
 </head>
@@ -60,13 +75,14 @@
 <body>
     <header>
         <h1>Alle</h1>
+
+        <nav>
+            <button data-troende="alle" class="valgt">Alle</button>
+            <button data-troende="ja">Troende</button>
+            <button data-troende="nej">Ikke troende</button>
+            <button data-troende="tvivler">Tvivler</button>
+        </nav>
     </header>
-    <nav>
-        <button data-troende="alle" class="valgt">Alle</button>
-        <button data-troende="ja">Troende</button>
-        <button data-troende="nej">Ikke troende</button>
-        <button data-troende="tvivler">Tvivler</button>
-    </nav>
 
     <section id="liste"></section>
 
@@ -81,6 +97,7 @@
 
     <script>
         const header = document.querySelector("header h1");
+        const url = "https://persongalleri-5d3e.restdb.io/rest/persongalleri";
         const medieurl = "https://persongalleri-5d3e.restdb.io/media/";
         const myHeaders = {
 
@@ -89,23 +106,23 @@
         document.addEventListener("DOMContentLoaded", start)
         let personer;
         let filter = "alle";
-
-
         // første funktion der kaldes efter DOM er loaded
         function start() {
-            const filterKnapper = document.querySelectorAll("nav button");
-            filterKnapper.forEach(knap => knap.addEventListener("click", filtrerPersoner));
+            const filterknapper = document.querySelectorAll("nav button");
+            filterknapper.forEach(knap => knap.addEventListener("click", filtrerPersoner));
             loadJSON();
         }
-        //eventlistener knyttet til knapperne der vælger hvad for et filter der er aktivt
+        //eventlisteners knyttet til knapperne der vises hvad for et filter som er aktivt
         function filtrerPersoner() {
-            filter = this.dataset.troende;
-            document.querySelector(".valgt").classList.remove("valgt");
-            this.classList.add("valgt")
-            visPersoner();
-            header.textContent = this.textContent;
-        }
+            filter = this.dataset.troende; // sæt variabel "filter" til værdien af data-troende på den knap der er klikket på
 
+            document.querySelector(".valgt").classList.remove("valgt"); //fjern classe valgt fra den knap
+            this.classList.add("valgt") //maker den knap der er klikket på
+
+            visPersoner(); // kald funktionen visPersoner efter det nye filter er sat på
+            header.textContent = this.textContent;
+
+        }
 
         async function loadJSON() {
             const JSONData = await fetch("https://persongalleri-5d3e.restdb.io/rest/persongalleri", {
@@ -114,7 +131,6 @@
             personer = await JSONData.json();
             console.log("Personer", personer);
             visPersoner();
-
         }
 
         //funktion der viser personer i liste view
@@ -122,30 +138,27 @@
 
             const dest = document.querySelector("#liste"); // container til articles med en person
             const skabelon = document.querySelector("template").content; // select indhold af html skabelon (article)
-
-            dest.textContent = ""; // ryd container inden ny loop
-
+            dest.textContent = ""; //ryd container inden ny loop
             personer.forEach(person => {
                 console.log("Troende", person.troende);
                 // loop igennem json (personer)
-                // tjek hvilken tro personen har og sammenlign med aktuelt filyer eller vis alle, hvis filter har værdien "alle".
 
+                //tjek hvilken tro personen har, og sammenlign med aktuelt filter, eller vis alle, hvis filter har værdien "alle"
                 if (filter == person.troende || filter == "alle") {
-
                     const klon = skabelon.cloneNode(true);
                     klon.querySelector(".navn").textContent = person.fornavn + " " + person.efternavn;
                     klon.querySelector(".profil-billede").src = medieurl + person.billede;
 
                     klon.querySelector(".person").addEventListener("click", () => visDetaljer(person));
 
+
                     dest.appendChild(klon);
-
-
                 }
             })
         }
 
         function visDetaljer(hvem) {
+
             location.href = `02-detalje.html?id=${hvem._id}`;
         }
     </script>
